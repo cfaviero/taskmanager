@@ -6,14 +6,13 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Data
-public class TaskResponseDTO {
-    private Long id;
-    private String title;
-    private String description;
-    private TaskStatus status;
-    private TaskPriority priority;
-    private LocalDateTime dueDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-}
+public record TaskResponseDTO (
+    Long id,
+    String title,
+    String description,
+    TaskStatus status,
+    TaskPriority priority,
+    LocalDateTime dueDate,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
+){}

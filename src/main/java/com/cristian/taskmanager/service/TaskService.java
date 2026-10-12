@@ -8,7 +8,6 @@ import com.cristian.taskmanager.model.Task;
 import com.cristian.taskmanager.model.TaskPriority;
 import com.cristian.taskmanager.model.TaskStatus;
 import com.cristian.taskmanager.repository.TaskRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +16,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class TaskService {
 
     private final TaskRepository taskRepository;
 
+    public TaskService (TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+
     public TaskResponseDTO createTask(TaskCreateDTO dto) {
-        log.info("Creando nueva tarea: {}", dto.getTitle());
+        log.info("Creando nueva tarea: {}", dto.title());
 
         Task task = new Task();
-        task.setTitle(dto.getTitle());
-        task.setDescription(dto.getDescription());
-        task.setPriority(dto.getPriority());
-        task.setDueDate(dto.getDueDate());
+        task.setTitle(dto.title());
+        task.setDescription(dto.description());
+        task.setPriority(dto.priority());
+        task.setDueDate(dto.dueDate());
         task.setStatus(TaskStatus.PENDING);
 
         Task savedTask = taskRepository.save(task);
@@ -63,20 +65,20 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
-        if (dto.getTitle() != null) {
-            task.setTitle(dto.getTitle());
+        if (dto.title() != null) {
+            task.setTitle(dto.title());
         }
-        if (dto.getDescription() != null) {
-            task.setDescription(dto.getDescription());
+        if (dto.description() != null) {
+            task.setDescription(dto.description());
         }
-        if (dto.getStatus() != null) {
-            task.setStatus(dto.getStatus());
+        if (dto.status() != null) {
+            task.setStatus(dto.status());
         }
-        if (dto.getPriority() != null) {
-            task.setPriority(dto.getPriority());
+        if (dto.priority() != null) {
+            task.setPriority(dto.priority());
         }
-        if (dto.getDueDate() != null) {
-            task.setDueDate(dto.getDueDate());
+        if (dto.dueDate() != null) {
+            task.setDueDate(dto.dueDate());
         }
 
         Task updatedTask = taskRepository.save(task);
@@ -115,15 +117,15 @@ public class TaskService {
     }
 
     private TaskResponseDTO convertToDTO(Task task) {
-        TaskResponseDTO dto = new TaskResponseDTO();
-        dto.setId(task.getId());
-        dto.setTitle(task.getTitle());
-        dto.setDescription(task.getDescription());
-        dto.setStatus(task.getStatus());
-        dto.setPriority(task.getPriority());
-        dto.setDueDate(task.getDueDate());
-        dto.setCreatedAt(task.getCreatedAt());
-        dto.setUpdatedAt(task.getUpdatedAt());
-        return dto;
+        return new TaskResponseDTO(
+        task.getId(),
+        task.getTitle(),
+        task.getDescription(),
+        task.getStatus(),
+        task.getPriority(),
+        task.getDueDate(),
+        task.getCreatedAt(),
+        task.getUpdatedAt()
+        );
     }
 }
